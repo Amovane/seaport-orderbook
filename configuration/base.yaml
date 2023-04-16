@@ -5,11 +5,11 @@ database:
   host: "localhost"
   port: 5432
   username: "postgres"
-  password: "password"
+  password: ""
   database_name: "quay"
 redis_url: "redis://127.0.0.1:6379"
 rpc:
-  uri: "http://127.0.0.1:8545"
-  chain_id: 1
+  uri: "https://endpoints.omniatech.io/v1/eth/goerli/public"
+  chain_id: 5
 indexer:
-  seaport_deploy_block: 14946473
+  seaport_deploy_block: 8837775
