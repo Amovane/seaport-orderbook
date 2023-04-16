@@ -1,5 +1,5 @@
 use crate::auth::{
-    unix_timestamp, SignedMessage, EXPIRATION_TIME_KEY, NONCE_KEY, USER_ADDRESS_KEY,
+    unix_timestamp, SignedMessage, EXPIRATION_TIME_KEY, USER_ADDRESS_KEY,
 };
 use crate::session::{session_server::Session, Empty, NonceText, VerifyText};
 
