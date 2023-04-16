@@ -12,7 +12,8 @@ use crate::auth::*;
 #[tracing::instrument(name = "Getting an EIP-4361 nonce for session", skip(session))]
 pub async fn get_nonce(mut session: WritableSession) -> impl IntoResponse {
     let nonce = siwe::generate_nonce();
-    match &session.insert(NONCE_KEY, &nonce) {
+    let nonce_key = std::env::var("NONCE_KEY").unwrap();
+    match &session.insert(&nonce_key, &nonce) {
         Ok(_) => {}
         Err(_) => {
             return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to set nonce.").into_response()
@@ -55,7 +56,8 @@ pub async fn verify(
     // Infallible because the signature has already been validated
     let message = signed_message.message.clone();
     // The frontend must set a session expiry
-    let session_nonce = match session.get(NONCE_KEY) {
+    let nonce_key = std::env::var("NONCE_KEY").unwrap();
+    let session_nonce = match session.get(&nonce_key) {
         Some(no) => no,
         None => return (StatusCode::UNPROCESSABLE_ENTITY, "Failed to get nonce.").into_response(),
     };

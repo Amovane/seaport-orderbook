@@ -25,7 +25,8 @@ pub struct SignedMessage {
 }
 
 pub async fn verify_session(session: &ReadableSession) -> impl IntoResponse {
-    match session.get::<String>(NONCE_KEY) {
+    let nonce_key = std::env::var("NONCE_KEY").unwrap();
+    match session.get::<String>(&nonce_key) {
         Some(_) => {}
         // Invalid nonce
         None => return (StatusCode::UNAUTHORIZED, "Failed to get nonce").into_response(),

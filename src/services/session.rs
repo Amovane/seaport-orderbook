@@ -16,7 +16,8 @@ fn authenticate(
     session: &RwLockReadGuard<axum_sessions::async_session::Session>,
 ) -> Result<(), Status> {
     // Confirm the nonce is valid.
-    match session.get::<String>(NONCE_KEY) {
+    let nonce_key = std::env::var("NONCE_KEY").unwrap();
+    match session.get::<String>(&nonce_key) {
         Some(_) => (),
         // Invalid nonce
         None => return Err(Status::unauthenticated("Failed to get nonce")),
@@ -72,7 +73,8 @@ impl Session for SessionService {
 
         // Generate and set the nonce
         let nonce = siwe::generate_nonce();
-        match session.insert(NONCE_KEY, &nonce) {
+        let nonce_key = std::env::var("NONCE_KEY").unwrap();
+        match session.insert(&nonce_key, &nonce) {
             Ok(_) => (),
             Err(_) => return Err(Status::internal("Failed to set nonce.")),
         }
@@ -111,7 +113,8 @@ impl Session for SessionService {
 
         // Verify the signed message
         let message = &signed_message.message;
-        let session_nonce = match session.get(NONCE_KEY) {
+        let nonce_key = std::env::var("NONCE_KEY").unwrap();
+        let session_nonce = match session.get(&nonce_key) {
             Some(no) => no,
             None => return Err(Status::unauthenticated("Failed to get nonce.")),
         };
