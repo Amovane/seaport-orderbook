@@ -7,7 +7,7 @@ services:
     restart: always
     working_dir: /app
     environment:
-      - APP_ENVIRONMENT=local
+      - APP_ENVIRONMENT=production
     image: api:v1
     command: ./seaport-orderbook 
     ports:
