@@ -1,0 +1,16 @@
+version: '3.9'
+networks:
+  seaport-net:
+    driver: bridge
+services:
+  api:
+    restart: always
+    working_dir: /app
+    environment:
+      - APP_ENVIRONMENT=local
+    image: api:v1
+    command: ./api
+    ports:
+     - 3000:3000
+    networks:
+     - seaport-net

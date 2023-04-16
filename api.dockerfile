@@ -1,4 +1,4 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1.61.0 as chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.68.2 as chef
 WORKDIR /app
 
 FROM chef as planner
@@ -15,17 +15,17 @@ RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 ENV SQLX_OFFLINE true
 # Build our project
-RUN cargo build --release --bin api
+RUN apt-get update -y \
+    && apt-get install protobuf-compiler -y
+RUN cargo build --release --bin server
 
 FROM debian:bullseye-slim AS runtime
 WORKDIR /app
 RUN apt-get update -y \
- && apt-get install -y --no-install-recommends openssl \
- # Clean up
- && apt-get autoremove -y \
- && apt-get clean -y \
- && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /app/target/release/api api
+    && apt-get install -y --no-install-recommends openssl \
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /app/target/release/server api
 COPY configuration configuration
-ENV APP_ENVIRONMENT production
-ENTRYPOINT ["./api"]
