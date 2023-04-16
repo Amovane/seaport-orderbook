@@ -9,7 +9,7 @@ services:
     environment:
       - APP_ENVIRONMENT=local
     image: api:v1
-    command: ./api
+    command: ./seaport-orderbook 
     ports:
      - 3000:3000
     networks:
