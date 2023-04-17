@@ -28,10 +28,10 @@ pub async fn create_offer(
     State(seaport): State<Seaport<Provider<Http>>>,
     Json(offer): Json<OrderInput>,
 ) -> impl IntoResponse {
-    let authenticated = verify_session(&session).await.into_response();
-    if authenticated.status() != StatusCode::OK {
-        return authenticated;
-    }
+    // let authenticated = verify_session(&session).await.into_response();
+    // if authenticated.status() != StatusCode::OK {
+    //     return authenticated;
+    // }
 
     if insert_offer_db(&db_pool, &offer, &seaport).await.is_err() {
         return (StatusCode::INTERNAL_SERVER_ERROR).into_response();
